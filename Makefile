@@ -4,25 +4,25 @@
 
 # Project info
 Project             = groff
-UserType            = Administration
+UserType            = Administrator
 ToolType            = Commands
-Extra_CC_Flags      = -no-cpp-precomp
-Extra_Environment   = LIBM="" manroot="$(MANDIR)"
-Extra_Install_Flags = INSTALL_PROGRAM="$(INSTALL) -c -s"	\
-		      manroot="$(DSTROOT)$(MANDIR)"
-GnuAfterInstall     = remove-dir install-man
+Extra_Install_Flags = INSTALL_PROGRAM="$(INSTALL) -c -s"
+GnuAfterInstall     = symlink remove-dir
 
-# It's a GNU Source project
+# GNU build setup
+install:: makeprefix
 include $(MAKEFILEPATH)/CoreOS/ReleaseControl/GNUSource.make
-
 Install_Target = install
 
-remove-dir :
-	rm $(DSTROOT)/usr/share/info/dir
+# Satisfy bogus check during installation.
+makeprefix:
+	mkdir -p $(DSTROOT)/usr
 
-# we install the legacy mdoc.7 man page
-# as well as link groff_mdoc to the legacy mdoc.samples.7 page
-install-man:
-	install -d $(DSTROOT)/usr/share/man/man7
-	install -m 444 $(SRCROOT)/mdoc.7 $(DSTROOT)$(MANDIR)/man7/mdoc.7
-	$(LN) $(DSTROOT)$(MANDIR)/man7/groff_mdoc.7 $(DSTROOT)$(MANDIR)/man7/mdoc.samples.7
+# Create links for "missing" manpages.
+symlink:
+	$(LN) $(DSTROOT)$(MANDIR)/man1/grohtml.1 $(DSTROOT)$(MANDIR)/man1/pre-grohtml.1
+	$(LN) $(DSTROOT)$(MANDIR)/man1/grohtml.1 $(DSTROOT)$(MANDIR)/man1/post-grohtml.1
+
+# Remove the info/dir file.
+remove-dir:
+	rm $(DSTROOT)/usr/share/info/dir
