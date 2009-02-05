@@ -13,6 +13,7 @@
 	<key>OpenSourceModifications</key>
 	<array>
 		<string>Added Darwin to the list of valid .Os values.</string>
+		<string>Disabled SGR by default (color codes).</string>
 	</array>
 	<key>OpenSourceLicense</key>
 	<string>GPL</string>
